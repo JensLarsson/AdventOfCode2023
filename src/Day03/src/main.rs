@@ -25,25 +25,20 @@ fn main() {
 }
 
 fn part_1(lines: &mut Vec<Vec<u8>>) -> i32 {
-    let mut my_set = Vec::new();
+    let mut sum = 0;
     for y in 0..lines.len() {
         for x in 0..lines[y].len() {
             if !lines[y][x].is_ascii_digit() && lines[y][x] != b'.' {
-                my_set.push(get_numbers_in_string(&mut lines[y - 1], x - 1));
-                my_set.push(get_numbers_in_string(&mut lines[y - 1], x));
-                my_set.push(get_numbers_in_string(&mut lines[y - 1], x + 1));
-                my_set.push(get_numbers_in_string(&mut lines[y], x - 1));
-                my_set.push(get_numbers_in_string(&mut lines[y], x + 1));
-                my_set.push(get_numbers_in_string(&mut lines[y + 1], x - 1));
-                my_set.push(get_numbers_in_string(&mut lines[y + 1], x));
-                my_set.push(get_numbers_in_string(&mut lines[y + 1], x + 1));
+                sum += get_numbers_in_string(&mut lines[y - 1], x - 1);
+                sum += get_numbers_in_string(&mut lines[y - 1], x);
+                sum += get_numbers_in_string(&mut lines[y - 1], x + 1);
+                sum += get_numbers_in_string(&mut lines[y], x - 1);
+                sum += get_numbers_in_string(&mut lines[y], x + 1);
+                sum += get_numbers_in_string(&mut lines[y + 1], x - 1);
+                sum += get_numbers_in_string(&mut lines[y + 1], x);
+                sum += get_numbers_in_string(&mut lines[y + 1], x + 1);
             }
         }
-    }
-
-    let mut sum = 0;
-    for number in my_set {
-        sum += number;
     }
     sum
 }
