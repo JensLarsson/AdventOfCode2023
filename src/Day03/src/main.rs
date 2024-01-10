@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use std::env; // For handling command line arguments
 use std::fs; // For file operations
 use std::io;
@@ -15,7 +14,7 @@ fn main() {
 
     match read_file_as_line_vector(file_path) {
         Ok(mut lines) => {
-            let part1 = part_1(&mut lines);
+            let part1 = part_1(&mut lines.clone());
             println!("Part 1: {}", part1);
         }
         Err(e) => {
@@ -25,9 +24,8 @@ fn main() {
     }
 }
 
-fn part_1(input: &Vec<Vec<u8>>) -> i32 {
+fn part_1(lines: &mut Vec<Vec<u8>>) -> i32 {
     let mut my_set = Vec::new();
-    let mut lines = input.clone();
     for y in 0..lines.len() {
         for x in 0..lines[y].len() {
             if !lines[y][x].is_ascii_digit() && lines[y][x] != b'.' {
