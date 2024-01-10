@@ -13,27 +13,33 @@ fn main() {
     }
     let file_path = &args[1];
 
-    let mut my_set = Vec::new();
     match read_file_as_line_vector(file_path) {
         Ok(mut lines) => {
-            for y in 0..lines.len() {
-                for x in 0..lines[y].len() {
-                    if !lines[y][x].is_ascii_digit() && lines[y][x] != b'.' {
-                        my_set.push(get_numbers_in_string(&mut lines[y - 1], x - 1));
-                        my_set.push(get_numbers_in_string(&mut lines[y - 1], x));
-                        my_set.push(get_numbers_in_string(&mut lines[y - 1], x + 1));
-                        my_set.push(get_numbers_in_string(&mut lines[y], x - 1));
-                        my_set.push(get_numbers_in_string(&mut lines[y], x + 1));
-                        my_set.push(get_numbers_in_string(&mut lines[y + 1], x - 1));
-                        my_set.push(get_numbers_in_string(&mut lines[y + 1], x));
-                        my_set.push(get_numbers_in_string(&mut lines[y + 1], x + 1));
-                    }
-                }
-            }
+            let part1 = part_1(&mut lines);
+            println!("Part 1: {}", part1);
         }
         Err(e) => {
             eprintln!("Error reading file: {}", e);
             process::exit(1);
+        }
+    }
+}
+
+fn part_1(input: &Vec<Vec<u8>>) -> i32 {
+    let mut my_set = Vec::new();
+    let mut lines = input.clone();
+    for y in 0..lines.len() {
+        for x in 0..lines[y].len() {
+            if !lines[y][x].is_ascii_digit() && lines[y][x] != b'.' {
+                my_set.push(get_numbers_in_string(&mut lines[y - 1], x - 1));
+                my_set.push(get_numbers_in_string(&mut lines[y - 1], x));
+                my_set.push(get_numbers_in_string(&mut lines[y - 1], x + 1));
+                my_set.push(get_numbers_in_string(&mut lines[y], x - 1));
+                my_set.push(get_numbers_in_string(&mut lines[y], x + 1));
+                my_set.push(get_numbers_in_string(&mut lines[y + 1], x - 1));
+                my_set.push(get_numbers_in_string(&mut lines[y + 1], x));
+                my_set.push(get_numbers_in_string(&mut lines[y + 1], x + 1));
+            }
         }
     }
 
@@ -41,7 +47,7 @@ fn main() {
     for number in my_set {
         sum += number;
     }
-    println!("Sum: {}", sum);
+    sum
 }
 
 fn read_file_as_line_vector(path: &str) -> Result<Vec<Vec<u8>>, io::Error> {
