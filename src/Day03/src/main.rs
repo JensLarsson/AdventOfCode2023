@@ -16,6 +16,8 @@ fn main() {
         Ok(mut lines) => {
             let part1 = part_1(&mut lines.clone());
             println!("Part 1: {}", part1);
+            let part2 = part_2(&mut lines);
+            println!("Part 2: {}", part2);
         }
         Err(e) => {
             eprintln!("Error reading file: {}", e);
@@ -29,14 +31,34 @@ fn part_1(lines: &mut Vec<Vec<u8>>) -> i32 {
     for y in 0..lines.len() {
         for x in 0..lines[y].len() {
             if !lines[y][x].is_ascii_digit() && lines[y][x] != b'.' {
-                sum += get_numbers_in_string(&mut lines[y - 1], x - 1);
-                sum += get_numbers_in_string(&mut lines[y - 1], x);
-                sum += get_numbers_in_string(&mut lines[y - 1], x + 1);
-                sum += get_numbers_in_string(&mut lines[y], x - 1);
-                sum += get_numbers_in_string(&mut lines[y], x + 1);
-                sum += get_numbers_in_string(&mut lines[y + 1], x - 1);
-                sum += get_numbers_in_string(&mut lines[y + 1], x);
-                sum += get_numbers_in_string(&mut lines[y + 1], x + 1);
+                sum += get_numbers_at_index(&mut lines[y - 1], x - 1);
+                sum += get_numbers_at_index(&mut lines[y - 1], x);
+                sum += get_numbers_at_index(&mut lines[y - 1], x + 1);
+                sum += get_numbers_at_index(&mut lines[y], x - 1);
+                sum += get_numbers_at_index(&mut lines[y], x + 1);
+                sum += get_numbers_at_index(&mut lines[y + 1], x - 1);
+                sum += get_numbers_at_index(&mut lines[y + 1], x);
+                sum += get_numbers_at_index(&mut lines[y + 1], x + 1);
+            }
+        }
+    }
+    sum
+}
+
+fn part_2(lines: &mut Vec<Vec<u8>>) -> i32 {
+    let mut sum = 0;
+    for y in 0..lines.len() {
+        for x in 0..lines[y].len() {
+            if lines[y][x] == b'*' {
+                let mut numbers = Vec::new();
+                for (x, y) in get_surrounding_indexes(x, y).iter() {
+                    numbers.push(get_numbers_at_index(&mut lines[*y], *x));
+                }
+                //remove 0s
+                numbers.retain(|&x| x != 0);
+                if numbers.len() == 2 {
+                    sum += numbers[0] * numbers[1];
+                }
             }
         }
     }
@@ -52,7 +74,7 @@ fn read_file_as_line_vector(path: &str) -> Result<Vec<Vec<u8>>, io::Error> {
     Ok(lines)
 }
 
-fn get_numbers_in_string(string: &mut Vec<u8>, x: usize) -> i32 {
+fn get_numbers_at_index(string: &mut Vec<u8>, x: usize) -> i32 {
     let mut start = x;
     let mut end = x;
     let mut number_found = false;
@@ -78,4 +100,17 @@ fn get_numbers_in_string(string: &mut Vec<u8>, x: usize) -> i32 {
         string[i] = b'.'; // Replace with '.' character
     }
     number
+}
+
+fn get_surrounding_indexes(x: usize, y: usize) -> [(usize, usize); 8] {
+    [
+        (x - 1, y - 1),
+        (x, y - 1),
+        (x + 1, y - 1),
+        (x - 1, y),
+        (x + 1, y),
+        (x - 1, y + 1),
+        (x, y + 1),
+        (x + 1, y + 1),
+    ]
 }
